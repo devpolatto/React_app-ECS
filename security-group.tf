@@ -17,3 +17,8 @@ resource "aws_security_group_rule" "http_from_net_rule" {
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.http_sg.id
 }
+
+# aws ec2 describe-security-groups \
+# --group-ids "" \
+# --profile "" \
+# --region ""
