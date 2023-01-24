@@ -8,13 +8,15 @@
 
 ### Backend
 In this lab we will store the terraform.state in an AWS S3. 
-As it is not allowed to use variables in a backend block, we can define the configuration values in a.conf file, as follows:
+As it is not allowed to use variables in a backend block, we can define the configuration values in a `.conf` file, as follows:
 
 ```
+# file.conf 
+
 region="us-east-1"
 profile="aws credencials "
 bucket="bucket name"
-```
+``` 
 With the configuration file defined, we can start terraform:
 ```
 terraform init -backend-config=file.conf
