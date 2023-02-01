@@ -8,7 +8,8 @@
 Neste laboratório iremo realizar um deploy de uma aplicação React com Vite em Docker no ECS da AWS. Utilizaremos o Terraform para provisionar a infraestrutura básica da nossa aplicação.
 
 ### 1. AWS ECR
-Para armazenar a imagem da aplicação React, iremos realizar o push  para um repositório do ERC. 
+Para armazenar a imagem da aplicação React, iremos realizar o push para um repositório do ERC. 
+
 Neste passo, não irei provisionar o repositório ERC utilizando o terraform, pois como e algo bem simples, e isolado, preferi utilizar apenas a [CLI da AWS](https://docs.aws.amazon.com/cli/latest/reference/ecr/index.html), mas nada impede de prosseguir utilizando o
 `aws_ecr_repository` [resource](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository) do terraform. Lembrando que para seguir com os seguintes passo, é preciso ter o AWS CLI configurado corretamente no terminal ou CMD.
 
@@ -20,6 +21,7 @@ aws ecr create-repository \
 ```
 Este comando ira retornar algo semelhante a isso
 ```json
+// output
 {
     "repository": {
         "repositoryArn": "arn:aws:ecr:us-east-1:XXXXXXXXXXXX:repository/react-app",
@@ -65,7 +67,7 @@ ENTRYPOINT ["nginx", "-g", "daemon off;"]
 
 #### Buildando e testando a imagem
 Siga os seguintes passos para realizar o build da imagem:
-```docker
+```bash
 docker build -t react-app:latest .
 ```
 Após fazer o build da imagem, execute:
@@ -85,7 +87,7 @@ git clone https://github.com/devpolatto/React_app-ECS.git
 ```
 #### Iniciando com o terraform
 Primeiro vamos definir o arquivo main para podermos setar o terraform e definir o backend
-```terraform
+```bash
 # main.tf
 
 terraform {
@@ -106,31 +108,59 @@ provider "aws" {
 ```
 
 Observe que estamos utilizando o argumento local para inserir valores sensíveis que não podem estar na linha do tempo do git. Abaixo estão as variáveis local que estão sendo utilizadas neste laboratório. Preencha com as informações da sua infraestrutura cloud.
-```tf
+```bash
 locals {
-  region = "us-east-1"
-  profile = ""
-  vpc_id = ""
-  igw_id = ""
+  region = "" # região da infraestrutura cloud
+  profile = "" # profile default ou personalizado em seu .aws/credentials
+  vpc_id = "" # id da VPC ex: vpc-02b50xxxxxxxxxxxx
+  igw_id = "" # id do Internet gateway ex: igw-02e2c9xxxxxxxxxxx
 }
 ```
 **OBS**: Não irei construir uma VPC do zero, pois não e o objetivo neste laboratório. Basta ter uma VPC e um internet-gateway prontos na AWS
 
 
-#### Backend
+### 5. Backend
 
-Neste laboratório, armazenaremos o terraform.state em um Bucket S3.
+Neste laboratório, armazenaremos o `terraform.state` em um Bucket S3.
+
+#### Criando o Bucket S3
+Para armazenarmos o arquivo de estado do terraform `terraform.tfstate`, primeiro deve-se criar o bucket S3. Para ser mais rápido, basta seguir com a CLI do aws s3api abaixo. Lembre-se de alterar o nome do bucket conforme deseja.
+
+```bash
+# criando o Bucket S3
+
+aws s3api create-bucket \
+--bucket terraform-bucket-000001-xxxxx \
+--acl private
+```
+```bash
+# Configrando o versionamento
+
+aws s3api put-bucket-versioning 
+--bucket terraform-bucket-000001-xxxxx \
+--versioning-configuration Status=Enabled
+```
+```bash
+# Bloqueando o acesso público
+
+aws s3api  put-public-access-block \
+--bucket terraform-bucket-000001-xxxxx \
+--public-access-block-configuration "BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true"
+```
+
+
 Como não é permitido o uso de variáveis em um bloco backend, podemos definir os valores de configuração em um arquivo `.conf`, da seguinte forma:
 
-```
+```bash
 # file.conf 
 
-region="us-east-1"
-profile="aws credencials "
-bucket="bucket name"
+region="" # região onde o bucket foi provisionado
+profile="" # profile default ou personalizado em seu .aws/credentials
+bucket="" # Nome do bucket
 ``` 
 Com o arquivo de configuração definido, podemos iniciar o terraform:
-```
+
+```bash
 terraform init -backend-config=file.conf
 ```
 
