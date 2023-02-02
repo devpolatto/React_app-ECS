@@ -138,7 +138,7 @@ aws s3api create-bucket \
 ```bash
 # Configrando o versionamento
 
-aws s3api put-bucket-versioning 
+aws s3api put-bucket-versioning \
 --bucket terraform-bucket-000001-xxxxx \
 --versioning-configuration Status=Enabled
 ```
