@@ -3,6 +3,8 @@
 <div align='center'>
 <h1>Deploy React app na AWS ECS com Terraform</h1>
 </div>
+</br>
+</br>
 
 
 Neste laboratório iremo realizar um deploy de uma aplicação React com Vite em Docker no ECS da AWS. Utilizaremos o Terraform para provisionar a infraestrutura básica da nossa aplicação.
@@ -13,7 +15,7 @@ Para armazenar a imagem da aplicação React, iremos realizar o push para um re
 Neste passo, não irei provisionar o repositório ERC utilizando o terraform, pois como e algo bem simples, e isolado, preferi utilizar apenas a [CLI da AWS](https://docs.aws.amazon.com/cli/latest/reference/ecr/index.html), mas nada impede de prosseguir utilizando o
 `aws_ecr_repository` [resource](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository) do terraform. Lembrando que para seguir com os seguintes passo, é preciso ter o AWS CLI configurado corretamente no terminal ou CMD.
 
-##### Criando o repositório
+#### Criando o repositório
 ```
 aws ecr create-repository \
     --repository-name react-app \
@@ -74,7 +76,7 @@ Após fazer o build da imagem, execute:
 ```bash
 docker container run -d -p 80:80 --name react-app react-app:latest
 ```
-Acesse `http://localhost:80` e verifique se a aplicação está roando corretament.
+Acesse `http://localhost:80` e verifique se a aplicação está rodando corretament.
 
 ### 3. Subindo a imagem pro AWS ECR
 Após ter criado o repositório via CLI, podemos vê-lo no Console da AWS. Dentro dele, vemos que não ha imagens. No canto superior direito, vemos um botão `View push commands`, nele tem o passo a passo para fazer o push para o repositório. Siga estes passos corretamente. Após seguir todos os passos, atualize a página e verifique se a sua imagem foi registrada no repositório.
