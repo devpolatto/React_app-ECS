@@ -43,6 +43,15 @@ Este comando ira retornar algo semelhante a isso
 ```
 O Importante nesto bloco é o `repositoryUri`
 
+É uma boa prática inserir Tags em todos os recursos que são provisionados. Entao iremos inserir as mesmas tags que utilizaremos no arquivo var.tf
+```
+aws ecr tag-resource \
+    --resource-arn arn:aws:ecr:us-east-1:XXXXXXXXXXXX:repository/react-app \
+    --tags Key=ENV,Value=lab \
+    --tags Key=ALIAS_PROJECT,Value="Depoy React App in AWS ECS" \
+    --tags Key=MANAGED_BY,Value=Terraform
+```
+
 ### 2. Executando o React App no container
 Neste laboratório não irei ensinar a como iniciar uma aplicação React com Vite, vou considerar que você já sabe o procedimento de olhos fechados. Após criar a aplicação, vamos criar um Arquivo Dockerfile na raiz pasta da aplicação, e inserir o seguinte manifesto:
 
