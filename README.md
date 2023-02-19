@@ -43,7 +43,7 @@ Este comando ira retornar algo semelhante a isso
 ```
 O Importante nesto bloco é o `repositoryUri`
 
-É uma boa prática inserir Tags em todos os recursos que são provisionados. Entao iremos inserir as mesmas tags que utilizaremos no arquivo var.tf
+É uma boa prática inserir Tags em todos os recursos que são provisionados. Entao iremos inserir as mesmas tags que utilizaremos no arquivo [var.tf](https://github.com/devpolatto/React_app-ECS/blob/master/var.tf)
 ```
 aws ecr tag-resource \
     --resource-arn arn:aws:ecr:us-east-1:XXXXXXXXXXXX:repository/react-app \
